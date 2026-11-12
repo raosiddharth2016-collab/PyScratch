@@ -3,22 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python to Scratch (.sb3) Compiler</title>
+    <title>PyCode - Python to Scratch (.sb3) Online Compiler</title>
+    <meta name="description" content="PyCode is a free online compiler that converts Python code directly into Scratch 3.0 (.sb3) project files with Pen, Music, and Text-to-Speech support.">
+    <meta name="keywords" content="pycode, python to scratch, python to sb3, scratch compiler, convert python to sb3 online, pyscratch">
+    <meta name="author" content="PyCode">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            max-width: 750px;
+            max-width: 800px;
             margin: 40px auto;
             padding: 0 20px;
             background-color: #f9fafb;
             color: #111827;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #4C97FF;
+            margin-bottom: 4px;
         }
         h2 {
-            color: #4C97FF;
+            color: #1f2937;
+            margin-top: 0;
         }
         textarea {
             width: 100%;
-            height: 300px;
+            height: 280px;
             font-family: "Fira Code", monospace;
             font-size: 14px;
             padding: 12px;
@@ -43,13 +52,34 @@
         }
         #status {
             margin-top: 12px;
-            font-weight: 500;
+            font-weight: 600;
+        }
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        .warning {
+            background: #FEF2F2;
+            border-left: 4px solid #EF4444;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
-    <h2>Python to Scratch (.sb3) Compiler</h2>
-    <p>Write your Python code below and click compile to download a Scratch 3.0 project file.</p>
+    <h1>PyCode — Python to Scratch (.sb3) Compiler</h1>
+    <p>Write Scratch-compatible Python code below and click compile to download a Scratch 3.0 project file.</p>
     
     <textarea id="code">pen.clear()
 pen.set_color("#FF3366")
@@ -67,6 +97,39 @@ tts.speak("Square complete!")</textarea>
     <br>
     <button onclick="compileCode()">Compile & Download .sb3</button>
     <p id="status"></p>
+
+    <div class="card">
+        <h2>How to Run Your Compiled File</h2>
+        <ol>
+            <li>Click <strong>Compile & Download .sb3</strong> above to download <code>scratch_project.sb3</code>.</li>
+            <li>Open <a href="https://mit.edu" target="_blank">scratch.mit.edu/projects/editor</a>.</li>
+            <li>Click <strong>File &rarr; Load from your computer</strong> and choose <code>scratch_project.sb3</code>.</li>
+            <li>Click the <strong>Green Flag</strong> to run your blocks!</li>
+        </ol>
+    </div>
+
+    <div class="card">
+        <h2>Restrictions & What Does NOT Work</h2>
+        <div class="warning">
+            <strong>Note:</strong> PyCode translates Python syntax directly into Scratch blocks. Standard Python modules and object-oriented features are not supported.
+        </div>
+        <ul>
+            <li><strong>No External Modules:</strong> <code>import math</code>, <code>import random</code>, or <code>import time</code> do not work. Use <code>wait(1)</code> instead.</li>
+            <li><strong>No Classes or OOP:</strong> Defining <code>class</code> objects or <code>self</code> properties is not supported.</li>
+            <li><strong>Basic Math Only:</strong> Standard operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>) and comparisons (<code>==</code>, <code>&lt;</code>, <code>&gt;</code>) work. Advanced functions like <code>math.cos()</code> or <code>math.sqrt()</code> are not supported.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>Supported Commands Cheatsheet</h2>
+        <ul>
+            <li><strong>Motion:</strong> <code>move(10)</code>, <code>turn_right(90)</code>, <code>turn_left(90)</code></li>
+            <li><strong>Looks & Control:</strong> <code>print("Hello")</code>, <code>wait(1)</code>, <code>if / else</code>, <code>while</code>, <code>for i in range(5):</code></li>
+            <li><strong>Pen Extension:</strong> <code>pen.clear()</code>, <code>pen.down()</code>, <code>pen.up()</code>, <code>pen.set_color("#FF3366")</code>, <code>pen.set_size(4)</code></li>
+            <li><strong>Text to Speech:</strong> <code>tts.speak("Hello")</code></li>
+            <li><strong>Music Extension:</strong> <code>music.play_note(60, 0.25)</code></li>
+        </ul>
+    </div>
 
     <script>
         async function compileCode() {
