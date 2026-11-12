@@ -3,11 +3,10 @@ import json
 import zipfile
 from flask import Flask, request, send_file
 
-# Import your compiler and SVG constants from api/compiler.py
 try:
-  from api.compiler import DEFAULT_SVG, FullPyToScratchCompiler, SVG_MD5
+  from api.wrapper import DEFAULT_SVG, FullPyToScratchCompiler, SVG_MD5
 except ImportError:
-  from compiler import DEFAULT_SVG, FullPyToScratchCompiler, SVG_MD5
+  from wrapper import DEFAULT_SVG, FullPyToScratchCompiler, SVG_MD5
 
 app = Flask(__name__)
 
@@ -35,4 +34,3 @@ def compile_route():
     )
   except Exception as e:
     return {"error": str(e)}, 400
-
