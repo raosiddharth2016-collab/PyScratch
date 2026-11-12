@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python to Scratch (.sb3) Compiler</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f9fafb;
+            color: #111827;
+        }
+        h2 {
+            color: #4C97FF;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            font-family: "Fira Code", monospace;
+            font-size: 14px;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-sizing: border-box;
+            background: #ffffff;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #4C97FF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        button:hover {
+            background-color: #3373CC;
+        }
+        #status {
+            margin-top: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <h2>Python to Scratch (.sb3) Compiler</h2>
+    <p>Write your Python code below and click compile to download a Scratch 3.0 project file.</p>
+    
+    <textarea id="code">pen.clear()
+pen.set_color("#FF3366")
+pen.set_size(4)
+pen.down()
+
+for i in range(4):
+    move(80)
+    turn_right(90)
+    music.play_note(60, 0.25)
+
+pen.up()
+tts.speak("Square complete!")</textarea>
+    
+    <br>
+    <button onclick="compileCode()">Compile & Download .sb3</button>
+    <p id="status"></p>
+
+    <script>
+        async function compileCode() {
+            const status = document.getElementById("status");
+            status.style.color = "#374151";
+            status.innerText = "Compiling...";
+            const code = document.getElementById("code").value;
+
+            try {
+                const response = await fetch("/compile", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ code })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "scratch_project.sb3";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    status.style.color = "#059669";
+                    status.innerText = "Success! Downloaded scratch_project.sb3";
+                } else {
+                    const err = await response.json();
+                    status.style.color = "#DC2626";
+                    status.innerText = "Syntax/Compile Error: " + err.error;
+                }
+            } catch (e) {
+                status.style.color = "#DC2626";
+                status.innerText = "Network Error: Could not reach compiler.";
+            }
+        }
+    </script>
+</body>
+</html>
