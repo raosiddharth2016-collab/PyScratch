@@ -1,19 +1,32 @@
 import io
 import json
+import traceback
 import zipfile
-from flask import Flask, request, send_file
-
-try:
-  from api.wrapper import DEFAULT_SVG, FullPyToScratchCompiler, SVG_MD5
-except ImportError:
-  from wrapper import DEFAULT_SVG, FullPyToScratchCompiler, SVG_MD5
+from flask import Flask, jsonify, request, send_file
 
 app = Flask(__name__)
 
+# Safely import wrapper so any syntax error shows clearly instead of crashing
+import_error = None
+try:
+  from api.wrapper import DEFAULT_SVG, FullPyToScratchCompiler, SVG_MD5
+except Exception:
+  try:
+    from wrapper import DEFAULT_SVG, FullPyToScratchCompiler, SVG_MD5
+  except Exception as e:
+    import_error = traceback.format_exc()
 
-@app.route("/compile", methods=["POST"])
-def compile_route():
-  data = request.get_json()
+
+@app.route("/", defaults={"path": ""}, methods=["POST", "GET"])
+@app.route("/<path:path>", methods=["POST", "GET"])
+def compile_route(path):
+  if import_error:
+    return jsonify({"error": f"Compiler startup error: {import_error}"}), 500
+
+  if request.method == "GET":
+    return jsonify({"status": "Compiler API is online!"})
+
+  data = request.get_json(silent=True) or {}
   python_code = data.get("code", "")
 
   try:
@@ -33,4 +46,4 @@ def compile_route():
         download_name="scratch_project.sb3",
     )
   except Exception as e:
-    return {"error": str(e)}, 400
+    return jsonify({"error": str(e)}), 400
